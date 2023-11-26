@@ -1,7 +1,6 @@
 package com.ide;
 
-import com.ide.ui.Default;
-
+import com.ide.ui.*;
 import javax.swing.*;
 import com.formdev.flatlaf.*;
 
@@ -13,7 +12,8 @@ public class Main {
             System.err.println( "Failed to initialize LaF" );
         }
         Default defaultUI = new Default();
-        defaultUI.setSize(600, 400);
+        defaultUI.setSize(700, 400);
         defaultUI.setVisible(true);
     }
 }
+

@@ -5,6 +5,7 @@ import java.awt.*;
 import java.io.*;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import com.tree.Tree;
 
 public class Default extends JFrame{
     //region UI Components
@@ -19,8 +20,11 @@ public class Default extends JFrame{
     private JTextArea errorLogs;
     private JScrollPane scrollPane;
     private JScrollPane errorScroll;
+    private JScrollPane treeScroll;
+    private Tree tree = new Tree(new File("C:\\"));
+    private JTree jTree = new JTree(tree);
     //endregion
-
+    protected String currentPath;
     //Constructor
     public Default(){
         setContentPane(mainPanel);
@@ -29,7 +33,10 @@ public class Default extends JFrame{
         setResizable(false);
         save.addActionListener(e->saveClicked());
         open.addActionListener(e->openClicked());
+        treeScroll.setViewportView(jTree);
+        jTree.setEditable(true);
     }
+
     public String getTime(){return LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss:SSSS"));}
     public void writeErrorLog(String error,String exception){
         errorLogs.setText(errorLogs.getText()+getTime()+" | Error "+error+exception+"\n");
@@ -51,11 +58,13 @@ public class Default extends JFrame{
     public void openFileUI(){
         String fPath;
         try{
-            FileDialog fOpen = new FileDialog((java.awt.Frame) null, "Open File", FileDialog.LOAD);
+            FileDialog fOpen = new FileDialog((Frame) null, "Open File", FileDialog.LOAD);
             fOpen.setVisible(true);
             if(fOpen.getDirectory()==null || fOpen.getFile()==null)throw new IOException("Operation canceled");
             fPath = fOpen.getDirectory()+fOpen.getFile();
             path.setText(fPath);
+            currentPath = fPath;
+            setRootHandler(fOpen.getDirectory());
             readFile(fPath);
         }catch (IOException e){
             writeErrorLog("opening file: ",e.getMessage());
@@ -84,7 +93,12 @@ public class Default extends JFrame{
         try{
             if(path.getText()!=null && !path.getText().isEmpty()){
                 try {
-                    if (!readFile(path.getText()))throw new IOException();
+                    if (new File(path.getText()).isDirectory())setRootHandler(path.getText());
+                    else if (!readFile(path.getText())||currentPath.equals(path.getText()))throw new IOException();
+                    else{
+                        setRootHandler(path.getText());
+                        currentPath=path.getText();
+                    }
                 }catch (IOException e){
                     openFileUI();
                 }
@@ -92,6 +106,13 @@ public class Default extends JFrame{
             else throw new IllegalArgumentException("File path is null");
         }catch (IllegalArgumentException iA){
             openFileUI();
+        }
+    }
+    public void setRootHandler(String file){
+        try{
+            tree.setRoot(new File(file));
+        }catch (IOException e){
+            writeErrorLog("opening directory: ",e.getMessage());
         }
     }
 }
