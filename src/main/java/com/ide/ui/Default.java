@@ -33,8 +33,8 @@ public class Default extends JFrame{
         setResizable(false);
         save.addActionListener(e->saveClicked());
         open.addActionListener(e->openClicked());
+        jTree.addTreeSelectionListener(e->selectionChanged());
         treeScroll.setViewportView(jTree);
-        jTree.setEditable(true);
     }
 
     public String getTime(){return LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss:SSSS"));}
@@ -93,12 +93,12 @@ public class Default extends JFrame{
         try{
             if(path.getText()!=null && !path.getText().isEmpty()){
                 try {
-                    if (new File(path.getText()).isDirectory())setRootHandler(path.getText());
-                    else if (!readFile(path.getText())||currentPath.equals(path.getText()))throw new IOException();
-                    else{
-                        setRootHandler(path.getText());
-                        currentPath=path.getText();
+                    String pathText = path.getText();
+                    if (new File(pathText).isDirectory()&&!new File(pathText).equals(new File(currentPath))){
+                        setRootHandler(pathText);
+                        currentPath=pathText;
                     }
+                    else throw new IOException();
                 }catch (IOException e){
                     openFileUI();
                 }
@@ -115,4 +115,16 @@ public class Default extends JFrame{
             writeErrorLog("opening directory: ",e.getMessage());
         }
     }
+    //file tree select listener
+    public void selectionChanged() {
+            try {
+                File file = (File) jTree.getLastSelectedPathComponent();
+                if (file==null)throw new IOException();
+                readFile(file.getPath());
+                path.setText(file.getPath());
+                currentPath = file.getPath();
+            }catch (IOException e){
+                writeErrorLog("File is null",e.getMessage());
+            }
+        }
 }

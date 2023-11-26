@@ -29,6 +29,7 @@ public class Tree implements TreeModel {
     //endregion
     public Tree(File root){
         this.root = root;
+
     }
     public static void main(String[] args) {
         JFrame frame = new JFrame("frame");
@@ -123,7 +124,6 @@ public class Tree implements TreeModel {
     public void removeTreeModelListener(TreeModelListener l) {
         listeners.remove(l);
     }
-
 
     //endregion
 
