@@ -1,17 +1,18 @@
-package com.ide.ui;
+package com.ErCup.ui;
 
 import javax.swing.*;
 import java.awt.*;
 import java.io.*;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+
 import com.tree.Tree;
 
 public class Default extends JFrame{
     //region UI Components
     private JPanel mainPanel;
     private JTextField path;
-    private JEditorPane editor;
+    private JTextArea editor;
     private JButton save;
     private JButton open;
     private JTabbedPane tabbedPane;
@@ -21,6 +22,7 @@ public class Default extends JFrame{
     private JScrollPane scrollPane;
     private JScrollPane errorScroll;
     private JScrollPane treeScroll;
+    private JSplitPane treeSplit;
     private Tree tree = new Tree(new File("C:\\"));
     private JTree jTree = new JTree(tree);
     //endregion
@@ -28,9 +30,9 @@ public class Default extends JFrame{
     //Constructor
     public Default(){
         setContentPane(mainPanel);
-        setTitle("ide");
+        setTitle("ErCup");
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        setResizable(false);
+        setIconImage(new ImageIcon(getClass().getResource("/icon.png")).getImage());
         save.addActionListener(e->saveClicked());
         open.addActionListener(e->openClicked());
         jTree.addTreeSelectionListener(e->selectionChanged());

@@ -1,18 +1,15 @@
-package com.ide;
+package com.ErCup;
 
-import com.ide.ui.*;
+import com.ErCup.ui.*;
 import javax.swing.*;
 import com.formdev.flatlaf.*;
 
 public class Main {
     public static void main(String[] args) {
-        try {
-            UIManager.setLookAndFeel( new FlatDarculaLaf() );
-        } catch( Exception ex ) {
-            System.err.println( "Failed to initialize LaF" );
-        }
+        FlatDarculaLaf.setup();
         Default defaultUI = new Default();
         defaultUI.setSize(700, 400);
+        defaultUI.setExtendedState(JFrame.MAXIMIZED_BOTH);
         defaultUI.setVisible(true);
     }
 }
