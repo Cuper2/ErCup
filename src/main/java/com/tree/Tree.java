@@ -3,8 +3,6 @@ package com.tree;
 import javax.swing.*;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 import java.io.File;
@@ -15,7 +13,7 @@ import java.util.Iterator;
 public class Tree implements TreeModel {
 
     //region definitions
-    ArrayList listeners = new ArrayList();
+    private ArrayList listeners = new ArrayList();
     private File root;
     private class TreeFile extends File{
         public TreeFile(File parent, String child){
@@ -27,18 +25,10 @@ public class Tree implements TreeModel {
     }
     private JTree jTree;
     //endregion
-    public Tree(File root){
+    public Tree(){
+        File root = File.listRoots()[0];
         this.root = root;
-
     }
-    public static void main(String[] args) {
-        JFrame frame = new JFrame("frame");
-        Tree tree = new Tree(new File("c:\\"));
-        JTree jTree = new JTree(tree);
-        frame.add(jTree);
-        frame.setVisible(true);
-    }
-
     public void setRoot(File rootDir)throws IOException{
         if (!rootDir.isDirectory())throw new IOException("Chosen object is not a directory");
         root = rootDir;
@@ -48,20 +38,15 @@ public class Tree implements TreeModel {
             iterator.next().treeStructureChanged(event);
         }
     }
-
     //region interface method implementations
     @Override
-    public Object getRoot() {
-        return root;
-    }
-
+    public Object getRoot() {return root;}
     @Override
     public Object getChild(Object parent, int index) {
         File file = (File) parent;
         String[] child = file.list();
         return new TreeFile(file, child[index]);
     }
-
     @Override
     public int getChildCount(Object parent) {
         File file = (File) parent;
@@ -73,13 +58,11 @@ public class Tree implements TreeModel {
         }
         return 0;
     }
-
     @Override
     public boolean isLeaf(Object node) {
         File file = (File) node;
         return file.isFile();
     }
-
     @Override
     public void valueForPathChanged(TreePath path, Object newValue) {
         File oldFile = (File) path.getLastPathComponent();
@@ -116,15 +99,8 @@ public class Tree implements TreeModel {
     }
 
     @Override
-    public void addTreeModelListener(TreeModelListener l) {
-        listeners.add(l);
-    }
-
+    public void addTreeModelListener(TreeModelListener l) {listeners.add(l);}
     @Override
-    public void removeTreeModelListener(TreeModelListener l) {
-        listeners.remove(l);
-    }
-
+    public void removeTreeModelListener(TreeModelListener l) {listeners.remove(l);}
     //endregion
-
 }
